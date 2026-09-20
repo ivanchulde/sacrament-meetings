@@ -9,12 +9,13 @@ interface MeetingPageProps {
 }
 
 async function getMeeting(id: string): Promise<SacramentMeeting> {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL ?? 'http://localhost:3000'}/api/meetings/${id}`,
-    {
-      cache: 'no-store',
-    },
-  );
+  const baseUrl = process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : 'http://localhost:3000';
+
+  const response = await fetch(`${baseUrl}/api/meetings/${id}`, {
+    cache: 'no-store',
+  });
 
   if (!response.ok) {
     throw new Error('No se pudo obtener la reunión');
