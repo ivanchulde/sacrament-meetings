@@ -1,13 +1,18 @@
+'use client';
 import type { SacramentMeeting } from '@/lib/types';
 
 interface MeetingDetailProps {
   meeting: SacramentMeeting;
 }
 
+
 export default function MeetingDetail({ meeting }: MeetingDetailProps) {
   const speakers = meeting.speakers.filter(
     (item) => item.type === 'speaker',
   );
+    const handlePrint = () => {
+    window.print();
+  };
 
   const musicalNumbers = meeting.speakers.filter(
     (item) => item.type === 'musical-number',
@@ -15,6 +20,13 @@ export default function MeetingDetail({ meeting }: MeetingDetailProps) {
 
   return (
     <article className="space-y-8">
+        <button
+          type="button"
+          onClick={handlePrint}
+          className="rounded-md bg-[var(--primary)] px-4 py-2 text-sm font-semibold text-white hover:opacity-90 print:hidden"
+        >
+          Imprimir reunión
+        </button>
       <header className="border-b border-[var(--border)] pb-6">
         <p className="text-sm font-semibold uppercase tracking-wide text-[var(--primary)]">
           {meeting.meetingType}
