@@ -21,11 +21,11 @@ export interface WardBusinessItem {
 
 export interface SacramentMeeting {
   id: number;
-  date: string;
+  date: string;              // ISO date string: 'YYYY-MM-DD'
   meetingType: MeetingType;
   presiding: string;
   conducting: string;
-  announcements: string[];
+  announcements?: string[];
   openingHymn: Hymn;
   openingPrayer: string;
   wardBusiness: WardBusinessItem[];

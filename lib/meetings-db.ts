@@ -201,20 +201,11 @@ const meetings: SacramentMeeting[] = [
   },
 ];
 
-export function getMeetings(
-  date?: string | null,
-): SacramentMeeting[] {
-  if (date) {
-    return meetings.filter((meeting) => meeting.date === date);
-  }
-
-  return [...meetings].sort((a, b) =>
-    b.date.localeCompare(a.date),
-  );
+export function getMeetings(date?: string | null): SacramentMeeting[] {
+  if (date) return meetings.filter(m => m.date === date);
+  return meetings;
 }
 
-export function getMeetingById(
-  id: number,
-): SacramentMeeting | null {
-  return meetings.find((meeting) => meeting.id === id) ?? null;
+export function getMeetingById(id: number): SacramentMeeting | null {
+  return meetings.find(m => m.id === id) ?? null;
 }
