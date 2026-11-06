@@ -16,7 +16,7 @@ export default function HomePage() {
 
       <div className="relative z-10 flex min-h-[70vh] flex-col items-center justify-center px-6 text-center text-white">
         <p className="text-sm font-semibold uppercase tracking-widest">
-          Barrio Pradera
+          Barrio Pradera - Estaca Ambato Ecuador
         </p>
 
         <h1 className="mt-3 max-w-4xl text-4xl font-bold tracking-tight md:text-6xl">
