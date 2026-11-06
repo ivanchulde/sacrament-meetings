@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import MeetingDetail from '@/components/MeetingDetail';
-import { getMeetingById } from '@/lib/meetings-db';
+import type { SacramentMeeting } from '@/lib/types';
 
 interface MeetingPageProps {
   params: Promise<{
@@ -9,15 +9,31 @@ interface MeetingPageProps {
   }>;
 }
 
+async function getMeeting(id: string): Promise<SacramentMeeting> {
+  const baseUrl = process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : 'http://localhost:3000';
+
+  const response = await fetch(`${baseUrl}/api/meetings/${id}`, {
+    cache: 'no-store',
+  });
+
+  if (response.status === 404 || response.status === 400) {
+    notFound();
+  }
+
+  if (!response.ok) {
+    throw new Error('No se pudo obtener la reunión');
+  }
+
+  return response.json();
+}
+
 export default async function MeetingPage({
   params,
 }: MeetingPageProps) {
   const { id } = await params;
-  const meetingId = Number(id);
-  if (!Number.isInteger(meetingId)) notFound();
-
-  const meeting = getMeetingById(meetingId);
-  if (!meeting) notFound();
+  const meeting = await getMeeting(id);
 
   return (
     <div>
@@ -28,8 +44,6 @@ export default async function MeetingPage({
         >
           ← Volver a reuniones
         </Link>
-
-        
       </div>
 
       <MeetingDetail meeting={meeting} />
