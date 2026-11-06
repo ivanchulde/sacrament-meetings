@@ -7,6 +7,7 @@ interface MeetingDetailProps {
 
 
 export default function MeetingDetail({ meeting }: MeetingDetailProps) {
+  const announcements = meeting.announcements ?? [];
   const speakers = meeting.speakers.filter(
     (item) => item.type === 'speaker',
   );
@@ -84,11 +85,11 @@ export default function MeetingDetail({ meeting }: MeetingDetailProps) {
         </dl>
       </section>
 
-      {meeting.announcements.length > 0 && (
+      {announcements.length > 0 && (
         <section>
           <h3 className="text-xl font-bold">Anuncios</h3>
           <ul className="mt-4 list-disc space-y-2 pl-5 text-sm">
-            {meeting.announcements.map((announcement) => (
+            {announcements.map((announcement) => (
               <li key={announcement}>{announcement}</li>
             ))}
           </ul>
