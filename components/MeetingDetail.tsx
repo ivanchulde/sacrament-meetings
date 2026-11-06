@@ -1,158 +1,222 @@
 'use client';
+
 import type { SacramentMeeting } from '@/lib/types';
 
 interface MeetingDetailProps {
   meeting: SacramentMeeting;
 }
 
+const meetingTypeLabels: Record<SacramentMeeting['meetingType'], string> = {
+  testimony: 'Reunión de testimonios',
+  regular: 'Reunión sacramental',
+  stake: 'Reunión de estaca',
+  general: 'Conferencia general',
+};
+
+const sectionClassName =
+  'rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5 shadow-sm sm:p-6';
+const sectionTitleClassName =
+  'flex items-center gap-3 text-lg font-bold tracking-tight text-[var(--foreground)]';
+const labelClassName =
+  'text-xs font-semibold uppercase tracking-[0.12em] text-[var(--muted)]';
+const valueClassName = 'mt-1.5 text-sm font-medium leading-6 text-[var(--foreground)]';
+
+function formatMeetingDate(date: string) {
+  return new Intl.DateTimeFormat('es-EC', {
+    dateStyle: 'full',
+    timeZone: 'UTC',
+  }).format(new Date(`${date}T00:00:00Z`));
+}
 
 export default function MeetingDetail({ meeting }: MeetingDetailProps) {
   const announcements = meeting.announcements ?? [];
-  const speakers = meeting.speakers.filter(
-    (item) => item.type === 'speaker',
-  );
-    const handlePrint = () => {
-    window.print();
-  };
-
+  const speakers = meeting.speakers.filter((item) => item.type === 'speaker');
   const musicalNumbers = meeting.speakers.filter(
     (item) => item.type === 'musical-number',
   );
 
   return (
-    <article className="space-y-8">
+    <div className="mx-auto max-w-4xl">
+      <div className="mb-4 flex justify-end print:hidden">
         <button
           type="button"
-          onClick={handlePrint}
-          className="rounded-md bg-[var(--primary)] px-4 py-2 text-sm font-semibold text-white hover:opacity-90 print:hidden"
+          onClick={() => window.print()}
+          className="inline-flex items-center gap-2 rounded-xl bg-[var(--primary)] px-5 py-3 text-sm font-semibold text-white shadow-md shadow-slate-900/10 transition hover:-translate-y-0.5 hover:bg-[var(--primary-strong)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--primary)]"
         >
-          Imprimir reunión
+          <span aria-hidden="true">⎙</span>
+          Imprimir programa
         </button>
-      <header className="border-b border-[var(--border)] pb-6">
-        <p className="text-sm font-semibold uppercase tracking-wide text-[var(--primary)]">
-          {meeting.meetingType}
-        </p>
+      </div>
 
-        <h2 className="mt-2 text-3xl font-bold">
-          Reunión del {meeting.date}
-        </h2>
-
-        <div className="mt-4 grid gap-2 text-sm md:grid-cols-2">
-          <p>
-            <strong>Preside:</strong> {meeting.presiding}
+      <article className="agenda-sheet space-y-5 rounded-3xl border border-[var(--border)] bg-[var(--card)] p-4 shadow-xl shadow-slate-900/5 sm:space-y-6 sm:p-7 lg:p-9">
+        <header className="overflow-hidden rounded-2xl bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] px-6 py-7 text-white sm:px-8 sm:py-9">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-white/75">
+            Barrio Pradera · Programa dominical
           </p>
-          <p>
-            <strong>Dirige:</strong> {meeting.conducting}
+          <h2 className="mt-3 text-2xl font-bold leading-tight sm:text-4xl">
+            {meetingTypeLabels[meeting.meetingType]}
+          </h2>
+          <p className="mt-2 text-sm capitalize text-white/85 sm:text-base">
+            {formatMeetingDate(meeting.date)}
           </p>
-        </div>
-      </header>
 
-      <section>
-        <h3 className="text-xl font-bold">Programa</h3>
-
-        <dl className="mt-4 space-y-3 text-sm">
-          <div>
-            <dt className="font-semibold">Himno de apertura</dt>
-            <dd>
-              #{meeting.openingHymn.number} — {meeting.openingHymn.title}
-            </dd>
+          <div className="mt-6 grid gap-3 border-t border-white/20 pt-5 sm:grid-cols-2">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wider text-white/70">
+                Preside
+              </p>
+              <p className="mt-1 font-semibold">{meeting.presiding}</p>
+            </div>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wider text-white/70">
+                Dirige
+              </p>
+              <p className="mt-1 font-semibold">{meeting.conducting}</p>
+            </div>
           </div>
+        </header>
 
-          <div>
-            <dt className="font-semibold">Oración de apertura</dt>
-            <dd>{meeting.openingPrayer}</dd>
-          </div>
-
-          <div>
-            <dt className="font-semibold">Himno sacramental</dt>
-            <dd>
-              #{meeting.sacramentHymn.number} —{' '}
-              {meeting.sacramentHymn.title}
-            </dd>
-          </div>
-
-          <div>
-            <dt className="font-semibold">Himno de clausura</dt>
-            <dd>
-              #{meeting.closingHymn.number} — {meeting.closingHymn.title}
-            </dd>
-          </div>
-
-          <div>
-            <dt className="font-semibold">Oración de clausura</dt>
-            <dd>{meeting.closingPrayer}</dd>
-          </div>
-        </dl>
-      </section>
-
-      {announcements.length > 0 && (
-        <section>
-          <h3 className="text-xl font-bold">Anuncios</h3>
-          <ul className="mt-4 list-disc space-y-2 pl-5 text-sm">
-            {announcements.map((announcement) => (
-              <li key={announcement}>{announcement}</li>
-            ))}
-          </ul>
+        <section className={sectionClassName}>
+          <h3 className={sectionTitleClassName}>
+            <span className="flex size-8 items-center justify-center rounded-full bg-[var(--primary-light)] text-sm text-[var(--primary)]">
+              1
+            </span>
+            Orden de la reunión
+          </h3>
+          <dl className="mt-4 grid gap-3 sm:grid-cols-2">
+            <div className="rounded-xl bg-[var(--surface-subtle)] p-4">
+              <dt className={labelClassName}>Himno de apertura</dt>
+              <dd className={valueClassName}>
+                N.º {meeting.openingHymn.number} · {meeting.openingHymn.title}
+              </dd>
+            </div>
+            <div className="rounded-xl bg-[var(--surface-subtle)] p-4">
+              <dt className={labelClassName}>Oración de apertura</dt>
+              <dd className={valueClassName}>{meeting.openingPrayer}</dd>
+            </div>
+            <div className="rounded-xl bg-[var(--surface-subtle)] p-4">
+              <dt className={labelClassName}>Himno sacramental</dt>
+              <dd className={valueClassName}>
+                N.º {meeting.sacramentHymn.number} · {meeting.sacramentHymn.title}
+              </dd>
+            </div>
+            <div className="rounded-xl bg-[var(--surface-subtle)] p-4">
+              <dt className={labelClassName}>Himno de clausura</dt>
+              <dd className={valueClassName}>
+                N.º {meeting.closingHymn.number} · {meeting.closingHymn.title}
+              </dd>
+            </div>
+            <div className="rounded-xl bg-[var(--surface-subtle)] p-4 sm:col-span-2">
+              <dt className={labelClassName}>Oración de clausura</dt>
+              <dd className={valueClassName}>{meeting.closingPrayer}</dd>
+            </div>
+          </dl>
         </section>
-      )}
 
-      {meeting.wardBusiness.length > 0 && (
-        <section>
-          <h3 className="text-xl font-bold">Asuntos del barrio</h3>
-          <ul className="mt-4 list-disc space-y-2 pl-5 text-sm">
-            {meeting.wardBusiness.map((item) => (
-              <li key={item.description}>{item.description}</li>
-            ))}
-          </ul>
-        </section>
-      )}
+        {announcements.length > 0 && (
+          <section className={sectionClassName}>
+            <h3 className={sectionTitleClassName}>
+              <span className="flex size-8 items-center justify-center rounded-full bg-[var(--primary-light)] text-sm text-[var(--primary)]">
+                2
+              </span>
+              Anuncios
+            </h3>
+            <ul className="mt-4 grid list-none gap-2 p-0">
+              {announcements.map((announcement) => (
+                <li
+                  key={announcement}
+                  className="rounded-xl bg-[var(--surface-subtle)] px-4 py-3 text-sm leading-6"
+                >
+                  {announcement}
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
 
-      {meeting.stakeBusiness && (
-        <section>
-          <h3 className="text-xl font-bold">Asuntos de la estaca</h3>
-          <p className="mt-2 text-sm">
-            Se tratarán asuntos de la estaca durante la reunión.
+        {meeting.wardBusiness.length > 0 && (
+          <section className={sectionClassName}>
+            <h3 className={sectionTitleClassName}>
+              <span className="flex size-8 items-center justify-center rounded-full bg-[var(--primary-light)] text-sm text-[var(--primary)]">
+                3
+              </span>
+              Asuntos del barrio
+            </h3>
+            <ul className="mt-4 grid list-none gap-2 p-0">
+              {meeting.wardBusiness.map((item) => (
+                <li
+                  key={item.description}
+                  className="rounded-xl bg-[var(--surface-subtle)] px-4 py-3 text-sm leading-6"
+                >
+                  {item.description}
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        <section className={sectionClassName}>
+          <h3 className={sectionTitleClassName}>
+            <span className="flex size-8 items-center justify-center rounded-full bg-[var(--primary-light)] text-sm text-[var(--primary)]">
+              4
+            </span>
+            Asuntos de la estaca
+          </h3>
+          <p className="mt-4 text-sm leading-6">
+            {meeting.stakeBusiness
+              ? 'Se tratarán asuntos de la estaca durante la reunión.'
+              : 'No se tratarán asuntos de la estaca en esta reunión.'}
           </p>
         </section>
-      )}
 
-      {speakers.length > 0 && (
-        <section>
-          <h3 className="text-xl font-bold">Discursos</h3>
-          <div className="mt-4 space-y-4">
-            {speakers.map((speaker) => (
-              <div
-                key={`${speaker.name}-${speaker.topic}`}
-                className="rounded-lg border border-[var(--border)] p-4"
-              >
-                <p className="font-semibold">{speaker.name}</p>
-                <p className="mt-1 text-sm text-[var(--muted)]">
-                  {speaker.topic}
-                </p>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
+        {speakers.length > 0 && (
+          <section className={sectionClassName}>
+            <h3 className={sectionTitleClassName}>
+              <span className="flex size-8 items-center justify-center rounded-full bg-[var(--primary-light)] text-sm text-[var(--primary)]">
+                5
+              </span>
+              Discursos
+            </h3>
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+              {speakers.map((speaker) => (
+                <article
+                  key={`${speaker.name}-${speaker.topic}`}
+                  className="rounded-xl border-l-4 border-[var(--accent)] bg-[var(--surface-subtle)] p-4"
+                >
+                  <p className="font-bold">{speaker.name}</p>
+                  <p className="mt-1 text-sm leading-6 text-[var(--muted)]">
+                    {speaker.topic}
+                  </p>
+                </article>
+              ))}
+            </div>
+          </section>
+        )}
 
-      {musicalNumbers.length > 0 && (
-        <section>
-          <h3 className="text-xl font-bold">Números musicales</h3>
-          <div className="mt-4 space-y-4">
-            {musicalNumbers.map((number) => (
-              <div
-                key={`${number.name}-${number.topic}`}
-                className="rounded-lg border border-[var(--border)] p-4"
-              >
-                <p className="font-semibold">{number.name}</p>
-                <p className="mt-1 text-sm text-[var(--muted)]">
-                  {number.topic}
-                </p>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
-    </article>
+        {musicalNumbers.length > 0 && (
+          <section className={sectionClassName}>
+            <h3 className={sectionTitleClassName}>
+              <span className="flex size-8 items-center justify-center rounded-full bg-[var(--primary-light)] text-sm text-[var(--primary)]">
+                ♪
+              </span>
+              Números musicales
+            </h3>
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+              {musicalNumbers.map((number) => (
+                <article
+                  key={`${number.name}-${number.topic}`}
+                  className="rounded-xl border-l-4 border-[var(--accent)] bg-[var(--surface-subtle)] p-4"
+                >
+                  <p className="font-bold">{number.name}</p>
+                  <p className="mt-1 text-sm leading-6 text-[var(--muted)]">
+                    {number.topic}
+                  </p>
+                </article>
+              ))}
+            </div>
+          </section>
+        )}
+      </article>
+    </div>
   );
 }

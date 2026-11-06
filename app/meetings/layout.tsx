@@ -5,7 +5,7 @@ export default function MeetingsLayout({
 }>) {
   return (
     <section>
-      <header className="mb-8">
+      <header className="mb-8 print:hidden">
         <p className="text-sm font-semibold uppercase tracking-wide text-[var(--primary)]">
           Planificador
         </p>

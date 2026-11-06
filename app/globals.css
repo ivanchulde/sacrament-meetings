@@ -1,12 +1,15 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-  --primary: #1e3a5f;
-  --primary-light: #e8eef5;
-  --muted: #6b7280;
-  --border: #d1d5db;
+  --background: #f3f6f8;
+  --foreground: #172b3a;
+  --primary: #173b5a;
+  --primary-strong: #102c45;
+  --primary-light: #e7eff4;
+  --accent: #397d78;
+  --surface-subtle: #f5f8fa;
+  --muted: #607382;
+  --border: #d7e1e7;
   --card: #ffffff;
 }
 
@@ -15,12 +18,16 @@
 }
 
 html {
+  min-height: 100%;
   background: var(--background);
 }
 
 body {
+  min-height: 100vh;
   margin: 0;
-  background: var(--background);
+  background:
+    radial-gradient(ellipse at top left, rgb(57 125 120 / 8%), transparent 32rem),
+    var(--background);
   color: var(--foreground);
 }
 
@@ -29,21 +36,45 @@ a {
   text-decoration: none;
 }
 
+button {
+  font: inherit;
+}
+
 @media print {
-  header,
-  footer,
-  nav,
-  a {
-    display: none !important;
+  @page {
+    margin: 14mm;
   }
 
   body {
     background: white;
-    color: black;
+    color: #111827;
+  }
+
+  .site-header,
+  .site-footer,
+  .print-hidden {
+    display: none !important;
   }
 
   main {
     max-width: none !important;
     padding: 0 !important;
+  }
+
+  .agenda-sheet {
+    max-width: none !important;
+    padding: 0 !important;
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .agenda-sheet > header {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .agenda-sheet section,
+  .agenda-sheet article {
+    break-inside: avoid;
   }
 }

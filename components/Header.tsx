@@ -2,7 +2,7 @@ import NavLinks from './NavLinks';
 
 export default function Header() {
   return (
-    <header className="border-b border-[var(--border)] bg-[var(--card)]">
+    <header className="site-header border-b border-[var(--border)] bg-[var(--card)]">
       <div className="flex w-full flex-col gap-4 px-8 py-5 md:flex-row md:items-center md:justify-between">
         <div>
           <p className="text-sm font-medium text-[var(--primary)]">

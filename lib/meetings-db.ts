@@ -3,7 +3,7 @@ import type { SacramentMeeting } from './types';
 const meetings: SacramentMeeting[] = [
   {
     id: 1,
-    date: '2026-09-20',
+    date: '2026-11-08',
     meetingType: 'regular',
     presiding: 'Obispo Luis Chulde',
     conducting: 'Hermano Carlos Mendoza',
@@ -51,7 +51,7 @@ const meetings: SacramentMeeting[] = [
   },
   {
     id: 2,
-    date: '2026-09-13',
+    date: '2026-11-15',
     meetingType: 'testimony',
     presiding: 'Obispo Luis Chulde',
     conducting: 'Hermano José Ramírez',
@@ -84,7 +84,7 @@ const meetings: SacramentMeeting[] = [
   },
   {
     id: 3,
-    date: '2026-09-06',
+    date: '2026-11-22',
     meetingType: 'regular',
     presiding: 'Obispo Luis Chulde',
     conducting: 'Hermana Patricia López',
@@ -127,7 +127,7 @@ const meetings: SacramentMeeting[] = [
   },
   {
     id: 4,
-    date: '2026-08-30',
+    date: '2026-11-29',
     meetingType: 'stake',
     presiding: 'Presidente David Martínez',
     conducting: 'Hermano Roberto Sánchez',
@@ -163,7 +163,7 @@ const meetings: SacramentMeeting[] = [
   },
   {
     id: 5,
-    date: '2026-08-23',
+    date: '2026-12-06',
     meetingType: 'general',
     presiding: 'Élder William Johnson',
     conducting: 'Hermano Fernando Ruiz',
