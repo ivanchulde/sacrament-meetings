@@ -1,7 +1,12 @@
 import { redirect } from 'next/navigation';
+import { connection } from 'next/server';
 import { getMeetings } from '@/lib/meetings-db';
 
-export default function CurrentMeetingPage() {
+export default async function CurrentMeetingPage() {
+  // `new Date()` must be evaluated per request; without this the route is
+  // prerendered at build time and the redirect target becomes stale.
+  await connection();
+
   const todayInEcuador = new Intl.DateTimeFormat('en-US', {
     timeZone: 'America/Guayaquil',
     year: 'numeric',
@@ -24,7 +29,7 @@ export default function CurrentMeetingPage() {
   const day = String(sunday.getUTCDate()).padStart(2, '0');
   const date = `${year}-${month}-${day}`;
 
-  const meeting = getMeetings(date)[0];
+  const [meeting] = await getMeetings('', 1, date);
 
   if (meeting) {
     redirect(`/meetings/${meeting.id}`);

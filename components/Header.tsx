@@ -9,9 +9,9 @@ export default function Header() {
             Barrio Pradera
           </p>
 
-          <h1 className="text-2xl font-bold">
+          <p className="text-2xl font-bold">
             Sacrament Meeting Planner
-          </h1>
+          </p>
 
           <p className="mt-1 text-sm text-[var(--muted)]">
             Planificador de reuniones sacramentales

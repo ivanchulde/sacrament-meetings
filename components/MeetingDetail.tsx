@@ -1,17 +1,11 @@
 'use client';
 
+import { meetingTypeLabels } from '@/lib/meeting-labels';
 import type { SacramentMeeting } from '@/lib/types';
 
 interface MeetingDetailProps {
   meeting: SacramentMeeting;
 }
-
-const meetingTypeLabels: Record<SacramentMeeting['meetingType'], string> = {
-  testimony: 'Reunión de testimonios',
-  regular: 'Reunión sacramental',
-  stake: 'Reunión de estaca',
-  general: 'Conferencia general',
-};
 
 const sectionClassName =
   'rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5 shadow-sm sm:p-6';

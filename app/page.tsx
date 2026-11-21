@@ -6,7 +6,7 @@ export default function HomePage() {
     <section className="relative min-h-[70vh] overflow-hidden rounded-2xl">
       <Image
         src="/barrio-pradera.jpg"
-        alt="Barrio Pradera"
+        alt="Edificio del barrio Pradera en Ambato, Ecuador"
         fill
         priority
         className="object-cover"

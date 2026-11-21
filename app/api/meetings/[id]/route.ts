@@ -11,16 +11,16 @@ export async function GET(
   context: RouteContext,
 ) {
   const { id } = await context.params;
-  const meetingId = Number(id);
 
-  if (!Number.isInteger(meetingId)) {
+  if (!/^\d+$/.test(id) || !Number.isSafeInteger(Number(id)) || Number(id) <= 0) {
     return Response.json(
       { error: 'ID de reunión inválido' },
       { status: 400 },
     );
   }
 
-  const meeting = getMeetingById(meetingId);
+  const meetingId = Number(id);
+  const meeting = await getMeetingById(meetingId);
 
   if (!meeting) {
     return Response.json(
