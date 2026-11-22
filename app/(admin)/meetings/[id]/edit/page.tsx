@@ -1,12 +1,46 @@
-export default function EditMeetingPage() {
+import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
+import MeetingForm from '@/components/MeetingForm';
+import { updateMeeting } from '@/lib/actions';
+import { getMeetingById } from '@/lib/meetings-db';
+
+interface EditMeetingPageProps {
+  params: Promise<{
+    id: string;
+  }>;
+}
+
+export const metadata: Metadata = {
+  title: 'Editar reunión | Sacrament Meeting Planner',
+};
+
+export default async function EditMeetingPage({
+  params,
+}: EditMeetingPageProps) {
+  const { id } = await params;
+
+  if (!/^\d+$/.test(id) || !Number.isSafeInteger(Number(id)) || Number(id) <= 0) {
+    notFound();
+  }
+
+  const meeting = await getMeetingById(Number(id));
+
+  if (!meeting) {
+    notFound();
+  }
+
+  const updateAction = updateMeeting.bind(null, meeting.id);
+
   return (
-    <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-sm">
-      <h2 className="text-xl font-bold">
-        Edit Meeting — Coming in Week 04
+    <div className="mx-auto max-w-4xl">
+      <h2 className="mb-6 text-2xl font-bold">
+        Editar reunión del {meeting.date}
       </h2>
-      <p className="mt-2 text-sm text-[var(--muted)]">
-        El formulario para editar reuniones se implementará en la Week 04.
-      </p>
+      <MeetingForm
+        action={updateAction}
+        meeting={meeting}
+        submitLabel="Guardar cambios"
+      />
     </div>
   );
 }

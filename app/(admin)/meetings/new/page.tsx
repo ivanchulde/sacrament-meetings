@@ -1,12 +1,16 @@
+import type { Metadata } from 'next';
+import MeetingForm from '@/components/MeetingForm';
+import { createMeeting } from '@/lib/actions';
+
+export const metadata: Metadata = {
+  title: 'Nueva reunión | Sacrament Meeting Planner',
+};
+
 export default function NewMeetingPage() {
   return (
-    <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-sm">
-      <h2 className="text-xl font-bold">
-        Create Meeting — Coming in Week 04
-      </h2>
-      <p className="mt-2 text-sm text-[var(--muted)]">
-        El formulario para crear reuniones se implementará en la Week 04.
-      </p>
+    <div className="mx-auto max-w-4xl">
+      <h2 className="mb-6 text-2xl font-bold">Nueva reunión</h2>
+      <MeetingForm action={createMeeting} submitLabel="Crear reunión" />
     </div>
   );
 }

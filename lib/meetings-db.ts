@@ -120,20 +120,86 @@ export async function getMeetingById(
   return (rows[0] as unknown as SacramentMeeting) ?? null;
 }
 
-// Mutation stubs — will be wired to the database in Week 04 when forms are built.
+// Mutations used by the Server Actions in lib/actions.ts.
 export async function addMeeting(
-  _data: Omit<SacramentMeeting, 'id'>,
-): Promise<SacramentMeeting> {
-  throw new Error('addMeeting: database implementation coming in Week 04');
+  data: Omit<SacramentMeeting, 'id'>,
+): Promise<number> {
+  const rows = await sql`
+    INSERT INTO meetings (
+      date, meeting_type, presiding, conducting, announcements,
+      opening_hymn, opening_prayer, ward_business, stake_business,
+      sacrament_hymn, speakers, closing_hymn, closing_prayer
+    )
+    VALUES (
+      ${data.date}::date,
+      ${data.meetingType}::varchar,
+      ${data.presiding}::varchar,
+      ${data.conducting}::varchar,
+      ${data.announcements ?? []}::text[],
+      ${JSON.stringify(data.openingHymn)}::jsonb,
+      ${data.openingPrayer}::varchar,
+      ${JSON.stringify(data.wardBusiness ?? [])}::jsonb,
+      ${data.stakeBusiness ?? false}::boolean,
+      ${JSON.stringify(data.sacramentHymn)}::jsonb,
+      ${JSON.stringify(data.speakers ?? [])}::jsonb,
+      ${JSON.stringify(data.closingHymn)}::jsonb,
+      ${data.closingPrayer}::varchar
+    )
+    RETURNING id
+  `;
+
+  return Number(rows[0].id);
 }
 
 export async function updateMeeting(
-  _id: number,
-  _updates: Partial<SacramentMeeting>,
-): Promise<SacramentMeeting | null> {
-  throw new Error('updateMeeting: database implementation coming in Week 04');
+  id: number,
+  updates: Partial<Omit<SacramentMeeting, 'id'>>,
+): Promise<boolean> {
+  // COALESCE keeps omitted fields untouched. The explicit casts are required
+  // so a null parameter still has a known type for PostgreSQL.
+  const rows = await sql`
+    UPDATE meetings
+    SET
+      date            = COALESCE(${updates.date ?? null}::date, date),
+      meeting_type    = COALESCE(${updates.meetingType ?? null}::varchar, meeting_type),
+      presiding       = COALESCE(${updates.presiding ?? null}::varchar, presiding),
+      conducting      = COALESCE(${updates.conducting ?? null}::varchar, conducting),
+      announcements   = COALESCE(${
+        updates.announcements ? updates.announcements : null
+      }::text[], announcements),
+      opening_hymn    = COALESCE(${
+        updates.openingHymn ? JSON.stringify(updates.openingHymn) : null
+      }::jsonb, opening_hymn),
+      opening_prayer  = COALESCE(${updates.openingPrayer ?? null}::varchar, opening_prayer),
+      ward_business   = COALESCE(${
+        updates.wardBusiness ? JSON.stringify(updates.wardBusiness) : null
+      }::jsonb, ward_business),
+      stake_business  = COALESCE(${
+        typeof updates.stakeBusiness === 'boolean' ? updates.stakeBusiness : null
+      }::boolean, stake_business),
+      sacrament_hymn  = COALESCE(${
+        updates.sacramentHymn ? JSON.stringify(updates.sacramentHymn) : null
+      }::jsonb, sacrament_hymn),
+      speakers        = COALESCE(${
+        updates.speakers ? JSON.stringify(updates.speakers) : null
+      }::jsonb, speakers),
+      closing_hymn    = COALESCE(${
+        updates.closingHymn ? JSON.stringify(updates.closingHymn) : null
+      }::jsonb, closing_hymn),
+      closing_prayer  = COALESCE(${updates.closingPrayer ?? null}::varchar, closing_prayer)
+    WHERE id = ${id}
+    RETURNING id
+  `;
+
+  return rows.length > 0;
 }
 
-export async function deleteMeeting(_id: number): Promise<boolean> {
-  throw new Error('deleteMeeting: database implementation coming in Week 04');
+export async function deleteMeeting(id: number): Promise<boolean> {
+  const rows = await sql`
+    DELETE FROM meetings
+    WHERE id = ${id}
+    RETURNING id
+  `;
+
+  return rows.length > 0;
 }
